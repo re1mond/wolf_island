@@ -47,7 +47,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animal.cs" />
-    <Compile Include="Arr.cs" />
     <Compile Include="Cord.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

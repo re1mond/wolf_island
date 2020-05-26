@@ -31,9 +31,9 @@ namespace wolf_island
         }
 
 
-        Wolf[] WolfsArray;
-        Wolfess[] WolfessesArray;
-        Rabbit[] RabbitsArray;
+        List <Wolf> WolfsArray;
+        List <Wolfess> WolfessesArray;
+        List <Rabbit> RabbitsArray;
 
         PictureBox[,] Boxes;
 
@@ -46,31 +46,31 @@ namespace wolf_island
 
             Boxes = boxes;
 
-            WolfsArray = new Wolf[WolfsCounter];
-            WolfessesArray = new Wolfess[WolfessesCounter];
-            RabbitsArray = new Rabbit[RabbitsCounter];
+            WolfsArray = new List<Wolf>();
+            WolfessesArray = new List<Wolfess>();
+            RabbitsArray = new List<Rabbit>();
 
 
             for (int i = 0; i < rabbitsCounter; i++)
             {
-                RabbitsArray[i] = new Rabbit(Animal.random.Next(0, 19), Animal.random.Next(0, 19));
+                RabbitsArray.Insert(i, new Rabbit(Animal.random.Next(0, 19), Animal.random.Next(0, 19)));
             }
 
             for (int i = 0; i < wolfsCounter; i++)
             {
-                WolfsArray[i] = new Wolf(Animal.random.Next(0, 19), Animal.random.Next(0, 19));
+                WolfsArray.Insert(i, new Wolf(Animal.random.Next(0, 19), Animal.random.Next(0, 19)));
             }
 
             for (int i = 0; i < wolfessesCounter; i++)
             {
-                WolfessesArray[i] = new Wolfess(Animal.random.Next(0, 19), Animal.random.Next(0, 19));
+                WolfessesArray.Insert(i, new Wolfess(Animal.random.Next(0, 19), Animal.random.Next(0, 19)));
             }
         }
 
         public void Update()
         {
        
-            foreach(Rabbit rabbit in RabbitsArray)
+            foreach(Rabbit rabbit in RabbitsArray.ToArray())
             {
                 if(!rabbit.IsStay())
                 {
@@ -83,25 +83,21 @@ namespace wolf_island
                 if (rabbit.MakeGenearation())
                 {
                     Console.WriteLine("Кролик виводить потомство");
-                    Array.Resize(ref RabbitsArray, RabbitsCounter + 1);
-                    RabbitsArray[RabbitsCounter++] = new Rabbit(rabbit.X, rabbit.Y);
+                    RabbitsArray.Add(new Rabbit(rabbit.X, rabbit.Y));
+                    RabbitsCounter++;
                 }
             }
             Draw();
 
-            foreach(Wolfess wolfess in WolfessesArray)
+            foreach(Wolfess wolfess in WolfessesArray.ToArray())
             {
-                /*foreach (Rabbit rabbit in RabbitsArray)
+                if(wolfess.Fullness <= 0) 
                 {
-                    if (rabbit.X <= wolfess.X + 1 && rabbit.X >= wolfess.X - 1 && 
-                        rabbit.Y >= wolfess.Y - 1 && rabbit.Y <= wolfess.Y + 1 && 
-                        (rabbit.X != wolfess.X && rabbit.Y != wolfess.Y))
-                    {
-                        //wolfess.X = rabbit.X;
-                        //wolfess.Y = rabbit.Y;
-                        Console.WriteLine($"[{wolfess.Y}:{wolfess.X}] Вовчиця знайшла кролика");
-                    }
-                }*/
+                    WolfessesArray.Remove(wolfess);
+                    WolfessesCounter--;
+                    Console.WriteLine($"[{wolfess.Y}:{wolfess.X}] | Вовчиця помирає від голоду");
+                }
+                
                 Rabbit huntedRabbit = wolfess.ScanRabbits(RabbitsArray);
 
                 if(huntedRabbit == null)
@@ -112,7 +108,55 @@ namespace wolf_island
                     wolfess.X = huntedRabbit.X;
                     wolfess.Y = huntedRabbit.Y;
                     wolfess.HuntRabbit();
-                    RabbitsArray = Arr.Remove(RabbitsArray, Array.IndexOf(RabbitsArray, huntedRabbit));
+                    RabbitsArray.Remove(huntedRabbit);
+                    RabbitsCounter--;
+                }
+            }
+
+            foreach(Wolf wolf in WolfsArray.ToArray())
+            {
+                if (wolf.Fullness <= 0)
+                {
+                    WolfsArray.Remove(wolf);
+                    WolfsCounter--;
+                    Console.WriteLine($"[{wolf.Y}:{wolf.X}] | Вовк помирає від голоду");
+                }
+                
+                Rabbit huntedRabbit = wolf.ScanRabbits(RabbitsArray);
+
+                if (huntedRabbit == null)
+                {
+                    Wolfess chasedWolfess = wolf.ScanWolfess(WolfessesArray);
+                    if (chasedWolfess == null)
+                    {
+                        wolf.Walk();
+                    }
+                    else
+                    {
+                        wolf.X = chasedWolfess.X;
+                        wolf.Y = chasedWolfess.Y;
+
+                        if(chasedWolfess.MakeGeneration())
+                        {
+                            WolfsArray.Add(new Wolf(chasedWolfess.X, chasedWolfess.Y));
+                            WolfsCounter++;
+                            Console.WriteLine($"({chasedWolfess.X}:{chasedWolfess.Y}) Народився вовк");
+                        } else
+                        {
+                            WolfessesArray.Add(new Wolfess(chasedWolfess.X, chasedWolfess.Y));
+                            WolfessesCounter++;
+                            Console.WriteLine($"({chasedWolfess.X}:{chasedWolfess.Y}) Народилась вовчиця");
+                        }
+                    }
+
+                }
+                else
+                {
+                    wolf.X = huntedRabbit.X;
+                    wolf.Y = huntedRabbit.Y;
+                    wolf.HuntRabbit();
+                    RabbitsArray.Remove(huntedRabbit);
+                    RabbitsCounter--;
                 }
             }
         }
@@ -144,14 +188,22 @@ namespace wolf_island
             Boxes = tmpBoxes;
         }
 
-        public async void Tick()
+        public async void Tick(Form frm)
         {
             if(isStarted)
             {
+                NumericUpDown wl = (NumericUpDown)frm.Controls.Find("wolfsCounter", true)[0];
+                NumericUpDown ws = (NumericUpDown)frm.Controls.Find("wolfessCounter", true)[0];
+                NumericUpDown rb = (NumericUpDown)frm.Controls.Find("rabbitsCounter", true)[0];
+
+                wl.Value = WolfsCounter;
+                ws.Value = WolfessesCounter;
+                rb.Value = RabbitsCounter;
+
                 Draw();
                 Update();
                 await Task.Delay(TIMEOUT);
-                Tick();
+                Tick(frm);
             }
         }
 

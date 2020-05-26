@@ -119,6 +119,11 @@
             // wolfsCounter
             // 
             this.wolfsCounter.Location = new System.Drawing.Point(137, 29);
+            this.wolfsCounter.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
             this.wolfsCounter.Name = "wolfsCounter";
             this.wolfsCounter.Size = new System.Drawing.Size(55, 20);
             this.wolfsCounter.TabIndex = 3;
@@ -126,6 +131,11 @@
             // rabbitsCounter
             // 
             this.rabbitsCounter.Location = new System.Drawing.Point(137, 69);
+            this.rabbitsCounter.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
             this.rabbitsCounter.Name = "rabbitsCounter";
             this.rabbitsCounter.Size = new System.Drawing.Size(55, 20);
             this.rabbitsCounter.TabIndex = 5;
@@ -151,6 +161,11 @@
             // wolfessCounter
             // 
             this.wolfessCounter.Location = new System.Drawing.Point(137, 50);
+            this.wolfessCounter.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
             this.wolfessCounter.Name = "wolfessCounter";
             this.wolfessCounter.Size = new System.Drawing.Size(55, 20);
             this.wolfessCounter.TabIndex = 4;
@@ -202,9 +217,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button stopBtn;
         private System.Windows.Forms.Button startBtn;
-        private System.Windows.Forms.NumericUpDown rabbitsCounter;
-        private System.Windows.Forms.NumericUpDown wolfessCounter;
-        private System.Windows.Forms.NumericUpDown wolfsCounter;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
@@ -212,6 +224,9 @@
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label timeoutLabel;
+        public System.Windows.Forms.NumericUpDown rabbitsCounter;
+        public System.Windows.Forms.NumericUpDown wolfessCounter;
+        public System.Windows.Forms.NumericUpDown wolfsCounter;
     }
 }
 

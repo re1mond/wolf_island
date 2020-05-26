@@ -33,9 +33,9 @@ namespace wolf_island
             return false;
         }
 
-        public Rabbit ScanRabbits(Rabbit[] rabbitsArr)
+        public Rabbit ScanRabbits(List<Rabbit> rabbitsArr)
         {
-            foreach (Rabbit rabbit in rabbitsArr)
+            foreach (Rabbit rabbit in rabbitsArr.ToArray())
             {
                     if (rabbit.X <= X + 1 && rabbit.X >= X - 1 &&
                         rabbit.Y >= Y - 1 && rabbit.Y <= Y + 1 &&

@@ -23,11 +23,11 @@ namespace wolf_island
 
         public bool MakeGenearation()
         {
-            if (random.Next(1, 6) == 5)
+            if (random.Next(1, 15) == 5)
             {
                 return true;
             }
             return false;
         }
     }
-}
+}   
